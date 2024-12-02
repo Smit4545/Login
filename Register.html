@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register Page</title>
+    <style>
+        body {
+            background-color: wheat;
+            margin: 0;
+            height: 100vh; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+        }
+        .cont {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+        .formm {
+            padding: 40px; 
+            display: flex;
+            flex-direction: column;
+            background-color: grey;
+            color: black;
+            border: 2px solid black;
+            border-radius: 20px;
+            width: 400px; 
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
+        }
+        h1 {
+            text-decoration: underline;
+            text-align: center;
+            font-size: 24px; 
+        }
+        .formm input, button {
+            border: 1px solid black;
+            font-weight: bold;
+            padding: 12px; 
+            font-size: 16px; 
+            margin-bottom: 10px; 
+        }
+        .formm input:focus {
+            background-color: bisque;
+            border: 2px solid black;
+            border-radius: 5px;
+        }
+        .formm button {
+            cursor: pointer;
+        }
+        .formm button:hover {
+            background-color: bisque;
+        }
+        #txt {
+            color: red;
+            margin-bottom: 10px; 
+        }
+    </style>
+</head>
+<body>
+    <div class="cont">
+        <form class="formm" id="registerForm">
+            <h1>Register Here</h1>
+            <label>Name:</label>
+            <input type="text" id="username" placeholder="Enter your name" required>
+            <label id="label">Email:</label>
+            <input type="email" id="email" placeholder="Enter your email" required>
+            <label>Password:</label>
+            <input type="password" id="password" placeholder="Enter password" required>
+            <button type="submit" id="submitButton">Register</button>
+            <div>
+                <h3 style="text-align: center;">Already a User?
+                    <a href="Login.html">Login</a>
+                </h3>
+            </div>
+        </form>
+    </div>
+    <script>
+        const loggedInUser = localStorage.getItem('loggedIn');
+        if (loggedInUser) {
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            const user = users.find(u => u.email === loggedInUser);
+            if (user && user.status) {
+                window.location.href = 'Post.html';
+            }
+        }
+        const form = document.getElementById('registerForm');
+        const emailLabel = document.getElementById('label');
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const name = document.getElementById('username').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            let users = JSON.parse(localStorage.getItem('users')) || [];
+            const existingUser = users.find(user => user.email === email);
+            if (existingUser) {
+                const emailInput = document.getElementById('email');
+                emailInput.style.border = "2px solid red";
+                emailLabel.innerText = "User already exists with this email";
+                emailLabel.style.color = "red";
+                emailInput.onchange = () => {
+                    emailInput.style.border = "1px solid black";
+                    emailLabel.innerText = "Email";
+                    emailLabel.style.color = "black";
+                };
+                return;
+            }
+            const newUser = {
+                username: name,
+                email: email,
+                password: password,
+                status: false,
+            };
+            users.push(newUser);
+            localStorage.setItem('users', JSON.stringify(users));
+            window.location.href = 'Login.html';
+        });
+        document.getElementById('loginButton').addEventListener('click', () => {
+            window.location.href = 'Login.html';
+        });
+    </script>
+</body>
+</html>
